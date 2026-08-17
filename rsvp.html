@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RSVP | Peter &amp; Mary</title>
+  <link rel="stylesheet" href="/assets/css/style.css" />
+</head>
+<body>
+  <div data-include="/partials/nav.html"></div>
+
+  <main>
+    <section class="section">
+      <div class="container">
+        <p class="hero-eyebrow" style="text-align:center;">We hope you can join us</p>
+        <h2 style="text-align:center;">RSVP</h2>
+        <p class="section-intro">Please respond by [add your RSVP deadline here].</p>
+
+        <form class="form" id="rsvp-form">
+          <div class="form-row">
+            <label for="name">Full Name(s)</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+
+          <div class="form-row">
+            <label>Will you be attending?</label>
+            <div class="radio-group">
+              <label><input type="radio" name="attending" value="Yes" required /> Joyfully Accept</label>
+              <label><input type="radio" name="attending" value="No" /> Regretfully Decline</label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <label for="guestCount">Number of Guests (including you)</label>
+            <input type="number" id="guestCount" name="guestCount" min="1" max="10" value="1" />
+          </div>
+
+          <div class="form-row">
+            <label for="mealChoice">Meal Choice</label>
+            <select id="mealChoice" name="mealChoice">
+              <option value="">Select an option</option>
+              <option value="Chicken">Chicken</option>
+              <option value="Beef">Beef</option>
+              <option value="Fish">Fish</option>
+              <option value="Vegetarian">Vegetarian</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <label for="notes">Notes (dietary restrictions, song requests, etc.)</label>
+            <textarea id="notes" name="notes"></textarea>
+          </div>
+
+          <button class="btn" type="submit">Send RSVP</button>
+          <p class="form-status" id="rsvp-status"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+
+  <script src="/assets/js/include.js"></script>
+  <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/rsvp.js"></script>
+</body>
+</html>
