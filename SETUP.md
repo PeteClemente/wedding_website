@@ -75,8 +75,25 @@ Point `www` at GitHub Pages with a `CNAME` record:
 
 These are marked with 📝 TODO callouts directly on the site so they're easy to find while browsing:
 
-- `details.html` — confirm venue addresses/map links, and add more specific dress code guidance
-- `details.html` — fill in real FAQ answers (parking, kids, dietary restrictions)
-- `our-story.html` — your story + optional wedding party section
-- `gallery.html` — swap placeholder boxes for real `<img>` tags pointing at photos in `assets/img/`
+- `schedule.html` — confirm venue addresses/map links, and add more specific dress code guidance
+- `faq.html` — fill in real FAQ answers (parking, kids, dietary restrictions)
+- `travel.html` — hotel names/room block codes/booking links, airport, directions, and transportation details
+- `our-story.html` — your story + optional wedding party section, and swap the gallery's placeholder boxes for real `<img>` tags pointing at photos in `assets/img/`
 - `registry.html` — real Amazon/Target registry links, and your actual Venmo username (replace `PLACEHOLDER_USERNAME` in the honeymoon fund link)
+
+## 4. Site password
+
+The whole site (except `password.html` itself) is gated behind a password, checked client-side in `assets/js/password.js` against a SHA-256 hash — this keeps casual visitors and search engines out, but isn't real security (anyone determined can view-source around it), so don't use it to protect anything sensitive.
+
+Once a guest enters the correct password, `password.html` sets `localStorage.site_unlocked = 'true'` in their browser, and `assets/js/gate.js` (loaded first thing on every other page) checks for that flag before letting the page render, redirecting back to `password.html` if it's missing.
+
+To change the password:
+1. Compute the SHA-256 hex digest of the new password, e.g. in Node: `node -e "console.log(require('crypto').createHash('sha256').update('yourpassword').digest('hex'))"`
+2. Paste the result into `PASSWORD_HASH` in `assets/js/password.js`.
+3. Commit and push.
+
+The current password is `chickencutlets4life`.
+
+## 5. Hidden game
+
+`game.html` (a Memory Match game) isn't linked in the nav — it's an easter egg. Clicking the "&" in the "Peter & Mary" logo 5 times within about 1.5 seconds sends you there. The click handler lives in `assets/js/nav.js`.

@@ -18,4 +18,27 @@ document.addEventListener('partialsLoaded', () => {
       link.classList.add('active');
     }
   });
+
+  // Hidden easter egg: click the "&" in the logo 5 times to find the game.
+  const amp = document.getElementById('brand-amp');
+  if (amp) {
+    let clicks = 0;
+    let resetTimer = null;
+
+    amp.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      clicks++;
+      clearTimeout(resetTimer);
+      resetTimer = setTimeout(() => {
+        clicks = 0;
+      }, 1500);
+
+      if (clicks >= 5) {
+        clicks = 0;
+        window.location.href = '/game.html';
+      }
+    });
+  }
 });
