@@ -75,11 +75,16 @@ Point `www` at GitHub Pages with a `CNAME` record:
 
 These are marked with 📝 TODO callouts directly on the site so they're easy to find while browsing:
 
-- `schedule.html` — confirm venue addresses/map links, and add more specific dress code guidance
-- `faq.html` — fill in real FAQ answers (parking, kids, dietary restrictions)
-- `travel.html` — hotel names/room block codes/booking links, airport, directions, and transportation details
-- `our-story.html` — your story + optional wedding party section, and swap the gallery's placeholder boxes for real `<img>` tags pointing at photos in `assets/img/`
-- `registry.html` — real Amazon/Target registry links, and your actual Venmo username (replace `PLACEHOLDER_USERNAME` in the honeymoon fund link)
+The whole site now lives in `index.html` as one scrolling page, with each nav tab (Schedule, Travel, Registry, Our Story, FAQs) jumping to its own `<section id="...">` there instead of loading a separate page. Look for the section by its `id` when editing:
+
+- `#schedule` — confirm venue addresses/map links, and add more specific dress code guidance
+- `#travel` — hotel names/room block codes/booking links, airport, directions, and transportation details
+- `#registry` — real Amazon/Target registry links, and your actual Venmo username (replace `PLACEHOLDER_USERNAME` in the honeymoon fund link)
+- `#our-story` — your story + optional wedding party section
+- `#faq` — fill in real FAQ answers (parking, kids, dietary restrictions)
+- Hero section — swap the HollyFace placeholder for the real photo once it's converted to `.jpg` (see note below)
+
+RSVP (`rsvp.html`) and the hidden game (`game.html`) stay as their own separate pages — they're not part of the scrolling sections.
 
 ## 4. Site password
 
@@ -97,3 +102,13 @@ The current password is `chickencutlets4life`.
 ## 5. Hidden game
 
 `game.html` (a Memory Match game) isn't linked in the nav — it's an easter egg. Clicking the "&" in the "Peter & Mary" logo 5 times within about 1.5 seconds sends you there. The click handler lives in `assets/js/nav.js`.
+
+## 6. Photos
+
+Photos live in `assets/img/`. Browsers can't display `.heic` files (the default format for iPhone photos), so anything added there needs to be `.jpg` or `.png`. This machine had the free Microsoft "HEIF Image Extensions" installed but it couldn't fully decode the `.heic` files without the paid "HEVC Video Extensions" add-on (~$0.99 on the Microsoft Store) — so 3 files are still stuck as `.heic`:
+
+- `HollyFace.heic` — meant for the framed photo spot on the home page hero (currently a placeholder)
+- `IMG_20260822_174442.heic`
+- `IMG_20260822_174537.heic`
+
+Easiest fix: re-export/re-share those specific photos as `.jpg` from whatever took them (phone Photos app export, "Save As JPEG", etc.) and drop the `.jpg` back into `assets/img/` with a sensible filename.
