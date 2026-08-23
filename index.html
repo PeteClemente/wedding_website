@@ -11,8 +11,10 @@
   <div data-include="/partials/nav.html"></div>
 
   <main>
-    <section class="hero">
-      <div class="container">
+    <section class="hero hero--photo">
+      <img class="hero-bg" src="/assets/img/engagement-beach-2.jpg" alt="Peter and Mary embracing in the surf at the beach" />
+      <div class="hero-overlay"></div>
+      <div class="container hero-content">
         <p class="hero-eyebrow">We're getting married</p>
         <h1>Peter &amp; Mary</h1>
         <p class="hero-date">Saturday, April 4, 2027</p>
@@ -38,17 +40,10 @@
 
         <a class="btn" href="/rsvp.html">RSVP</a>
         <a class="btn btn-secondary" href="#schedule">Event Details</a>
-
-        <div class="hero-photo">
-          <div class="placeholder-box">Add HollyFace photo here</div>
-        </div>
-        <p style="text-align:center;">
-          <span class="todo-note">📝 TODO: HollyFace.heic couldn't be auto-converted (no HEIC decoder on this machine) — convert it to .jpg yourself and swap it in here as &lt;img src="/assets/img/hollyface.jpg" alt="..."&gt;.</span>
-        </p>
       </div>
     </section>
 
-    <section class="section section--alt">
+    <section class="section section--sage">
       <div class="container">
         <p class="section-intro">
           We're so excited to celebrate our wedding day with the people we love most.
@@ -58,13 +53,16 @@
       </div>
     </section>
 
-    <section class="section" id="schedule">
+    <section class="section section--paper" id="schedule">
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">Saturday, April 4, 2027</p>
-        <h2 style="text-align:center;">Wedding Day Schedule</h2>
+        <h2 class="script" style="text-align:center;">Schedule</h2>
 
         <ul class="schedule">
           <li>
+            <span class="schedule-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M24 6 L24 16 M18 10 L30 10 M10 44 L10 24 L24 14 L38 24 L38 44 Z M20 44 L20 30 L28 30 L28 44" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
             <time>2:00 PM</time>
             <div>
               <h3>Ceremony</h3>
@@ -72,6 +70,9 @@
             </div>
           </li>
           <li>
+            <span class="schedule-icon" aria-hidden="true">
+              <svg viewBox="0 0 48 48"><path d="M14 8 C14 16 20 18 20 26 C20 32 16 34 16 40 L32 40 C32 34 28 32 28 26 C28 18 34 16 34 8 Z M14 8 L34 8 M20 40 L28 40 M20 26 L28 26" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
             <time>5:30 PM</time>
             <div>
               <h3>Reception</h3>
@@ -85,7 +86,7 @@
       </div>
     </section>
 
-    <section class="section section--alt">
+    <section class="section section--sage">
       <div class="container">
         <h2 style="text-align:center;">Dress Code</h2>
         <p class="section-intro">Formal attire.</p>
@@ -95,10 +96,10 @@
       </div>
     </section>
 
-    <section class="section" id="travel">
+    <section class="section section--paper" id="travel">
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">Getting Here</p>
-        <h2 style="text-align:center;">Travel</h2>
+        <h2 class="script" style="text-align:center;">Travel</h2>
         <p class="section-intro">
           A few notes to help you plan your trip. More details to come as we lock them in.
         </p>
@@ -124,7 +125,7 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section section--paper">
       <div class="container">
         <h2 style="text-align:center;">Getting There</h2>
         <div class="faq">
@@ -150,7 +151,7 @@
     <section class="section section--alt" id="registry">
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">With Love</p>
-        <h2 style="text-align:center;">Registry</h2>
+        <h2 class="script" style="text-align:center;">Registry</h2>
         <p class="section-intro">
           Your presence at our wedding is the greatest gift of all. If you'd like to
           give a gift, we've registered at the links below.
@@ -180,10 +181,18 @@
       </div>
     </section>
 
-    <section class="section" id="our-story">
+    <section class="section section--paper" id="our-story">
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">Our Story</p>
-        <h2 style="text-align:center;">How We Met</h2>
+        <h2 class="script" style="text-align:center;">How We Met</h2>
+
+        <div class="framed-photo">
+          <div class="placeholder-box">Add HollyFace photo here</div>
+        </div>
+        <p style="text-align:center;">
+          <span class="todo-note">📝 TODO: HollyFace.heic couldn't be auto-converted (no HEIC decoder on this machine) — convert it to .jpg yourself and swap it in here as &lt;img src="/assets/img/hollyface.jpg" alt="..."&gt;.</span>
+        </p>
+
         <p class="section-intro">
           This is the spot for the story of how you two met, your first date, the
           proposal — whatever you'd like to share with your guests.
@@ -219,10 +228,10 @@
       </div>
     </section>
 
-    <section class="section">
+    <section class="section section--paper">
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">Photos</p>
-        <h2 style="text-align:center;">Gallery</h2>
+        <h2 class="script" style="text-align:center;">Gallery</h2>
         <p class="section-intro">A few of our favorite moments together.</p>
 
         <div class="gallery-grid">
@@ -265,7 +274,7 @@
     <section class="section section--alt" id="faq">
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">Good to Know</p>
-        <h2 style="text-align:center;">Frequently Asked Questions</h2>
+        <h2 class="script" style="text-align:center;">FAQs</h2>
         <div class="faq">
           <div class="faq-item">
             <h3>Is there parking at the venues?</h3>
