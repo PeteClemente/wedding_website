@@ -305,6 +305,159 @@ a { color: var(--color-primary-dark); }
   opacity: 0.8;
 }
 
+/* Plain countdown (no card backgrounds) — used on the countdown photo section */
+.countdown--plain {
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.countdown--plain .countdown-unit {
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0 0.6rem;
+  min-width: 0;
+}
+
+.countdown--plain .countdown-unit strong {
+  font-size: clamp(2.3rem, 6vw, 3.8rem);
+  line-height: 1;
+}
+
+.countdown--plain .countdown-unit:not(:last-child)::after {
+  content: ':';
+  position: absolute;
+  top: -0.05em;
+  right: -0.6rem;
+  font-family: var(--font-heading);
+  font-size: clamp(2.3rem, 6vw, 3.8rem);
+  line-height: 1;
+  color: inherit;
+}
+
+/* Envelope + card + polaroid */
+.envelope-wrap {
+  text-align: center;
+  padding: 1rem 0 0.5rem;
+}
+
+.envelope {
+  position: relative;
+  width: min(420px, 88%);
+  aspect-ratio: 400 / 260;
+  margin: 0 auto 3.5rem;
+}
+
+.envelope-shape {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 14px 24px rgba(51, 48, 44, 0.2));
+}
+
+.envelope-body-shape {
+  fill: var(--color-sage-deep);
+}
+
+.envelope-flap-shape {
+  fill: var(--color-primary-dark);
+}
+
+.envelope-monogram {
+  position: absolute;
+  left: 50%;
+  bottom: 12%;
+  transform: translateX(-50%);
+  margin: 0;
+  font-family: var(--font-script);
+  font-size: 1.7rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.envelope-card {
+  position: absolute;
+  top: -14%;
+  left: 50%;
+  width: 76%;
+  transform: translateX(-50%) rotate(-1.5deg);
+  background: var(--color-bg-alt);
+  padding: 1.4rem 1rem 1.1rem;
+  border-radius: 2px;
+  box-shadow: 0 14px 26px rgba(51, 48, 44, 0.25);
+}
+
+.envelope-card p {
+  margin: 0 0 0.3em;
+}
+
+.envelope-card p:last-child {
+  margin-bottom: 0;
+}
+
+.envelope-names {
+  font-family: var(--font-heading);
+  font-size: clamp(1.2rem, 3vw, 1.5rem);
+  letter-spacing: 0.06em;
+  color: var(--color-primary-dark);
+}
+
+.envelope-date {
+  font-family: var(--font-heading);
+  font-style: italic;
+  color: var(--color-text-soft);
+}
+
+.envelope-venue {
+  font-size: 0.8rem;
+  color: var(--color-text-soft);
+}
+
+.polaroid {
+  position: absolute;
+  right: -6%;
+  bottom: -16%;
+  width: 40%;
+  background: var(--color-bg-alt);
+  padding: 6px 6px 20px;
+  box-shadow: 0 12px 22px rgba(51, 48, 44, 0.22);
+  transform: rotate(6deg);
+}
+
+.polaroid img {
+  width: 100%;
+  display: block;
+}
+
+/* Scroll reveal animations */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal-left {
+  transform: translateX(-50px);
+}
+
+.reveal-right {
+  transform: translateX(50px);
+}
+
+.reveal.reveal-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Framed circular photo (used inline within a section, e.g. Our Story) */
 .framed-photo {
   width: 220px;
