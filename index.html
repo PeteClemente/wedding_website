@@ -7,7 +7,7 @@
   <title>Peter &amp; Mary | April 4, 2027</title>
   <link rel="stylesheet" href="/assets/css/style.css" />
 </head>
-<body>
+<body class="has-hero-photo">
   <div data-include="/partials/nav.html"></div>
 
   <main>
@@ -36,15 +36,24 @@
       <div class="container">
         <div class="envelope-wrap">
           <div class="envelope reveal">
-            <svg class="envelope-shape" viewBox="0 0 400 260" preserveAspectRatio="none" aria-hidden="true">
-              <rect class="envelope-body-shape" x="0" y="40" width="400" height="220" />
-              <polygon class="envelope-flap-shape" points="0,40 400,40 200,170" />
-            </svg>
-            <p class="envelope-monogram">P &amp; M</p>
+            <div class="envelope-flap-wrap">
+              <svg class="envelope-flap-svg" viewBox="0 0 100 65" preserveAspectRatio="none" aria-hidden="true">
+                <defs>
+                  <linearGradient id="envelopeFlapGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop class="envelope-flap-stop-1" offset="0%" />
+                    <stop class="envelope-flap-stop-2" offset="100%" />
+                  </linearGradient>
+                </defs>
+                <polygon points="2,3 98,3 50,29" fill="url(#envelopeFlapGrad)" />
+              </svg>
+            </div>
             <div class="envelope-card">
               <p class="envelope-names">Peter &amp; Mary</p>
               <p class="envelope-date">April 4, 2027</p>
               <p class="envelope-venue">Bernardsville &amp; Florham Park, NJ</p>
+            </div>
+            <div class="envelope-body">
+              <p class="envelope-monogram">P &amp; M</p>
             </div>
             <div class="polaroid reveal reveal-right">
               <img src="/assets/img/engagement-beach-4.jpg" alt="Peter and Mary smiling at a lifeguard stand in Ocean City, NJ" />
@@ -55,8 +64,8 @@
       </div>
     </section>
 
-    <section class="hero hero--photo">
-      <img class="hero-bg" src="/assets/img/engagement-beach-3.jpg" alt="Peter and Mary sharing a moment under a lifeguard stand" />
+    <section class="hero hero--photo hero--short">
+      <img class="hero-bg" src="/assets/img/engagement-beach-5.jpg" alt="Peter and Mary among the dunes at golden hour" style="object-position: center 38%;" />
       <div class="hero-overlay"></div>
       <div class="container hero-content">
         <div class="countdown countdown--plain" id="countdown">
@@ -80,7 +89,7 @@
       </div>
     </section>
 
-    <section class="section section--alt">
+    <section class="section section--alt" id="schedule">
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">Saturday, April 4, 2027</p>
         <h2 class="script" style="text-align:center;">The Details</h2>
@@ -88,12 +97,12 @@
           Everything you need to know for the big day — ceremony, reception, dress code, and how to get there.
         </p>
         <p style="text-align:center;">
-          <a class="btn btn-secondary" href="#schedule">View Schedule</a>
+          <a class="btn btn-secondary" href="#schedule-list">View Schedule</a>
         </p>
       </div>
     </section>
 
-    <section class="section section--paper" id="schedule">
+    <section class="section section--paper" id="schedule-list">
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">Saturday, April 4, 2027</p>
         <h2 class="script" style="text-align:center;">Schedule</h2>

@@ -1,10 +1,10 @@
 document.addEventListener('partialsLoaded', () => {
   const toggle = document.querySelector('.nav-toggle');
-  const nav = document.querySelector('.site-nav');
+  const navLinksWrap = document.querySelector('.site-nav-links');
 
-  if (toggle && nav) {
+  if (toggle && navLinksWrap) {
     toggle.addEventListener('click', () => {
-      nav.classList.toggle('open');
+      navLinksWrap.classList.toggle('open');
     });
   }
 
@@ -25,7 +25,7 @@ document.addEventListener('partialsLoaded', () => {
   // Close the mobile menu after picking a section.
   navLinks.forEach((link) => {
     link.addEventListener('click', () => {
-      if (nav) nav.classList.remove('open');
+      if (navLinksWrap) navLinksWrap.classList.remove('open');
     });
   });
 
@@ -54,19 +54,6 @@ document.addEventListener('partialsLoaded', () => {
       { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
     );
     sections.forEach((section) => observer.observe(section));
-
-    const hero = document.querySelector('main .hero');
-    if (hero) {
-      const heroObserver = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) setActiveHash('');
-          });
-        },
-        { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
-      );
-      heroObserver.observe(hero);
-    }
   } else {
     navLinks.forEach((link) => {
       const url = new URL(link.href);
@@ -74,6 +61,24 @@ document.addEventListener('partialsLoaded', () => {
         link.classList.add('active');
       }
     });
+  }
+
+  // On the home page, the header floats transparently over the full-bleed
+  // hero photo and turns solid once you scroll past it.
+  if (document.body.classList.contains('has-hero-photo')) {
+    const header = document.querySelector('.site-header');
+    const hero = document.querySelector('main .hero--photo');
+    if (header && hero) {
+      const threshold = () => Math.max(hero.offsetHeight - 90, 100);
+
+      function updateHeaderState() {
+        header.classList.toggle('site-header--overlay', window.scrollY < threshold());
+      }
+
+      updateHeaderState();
+      window.addEventListener('scroll', updateHeaderState, { passive: true });
+      window.addEventListener('resize', updateHeaderState);
+    }
   }
 
   // Hidden easter egg: click the "&" in the logo 5 times to find the game.
