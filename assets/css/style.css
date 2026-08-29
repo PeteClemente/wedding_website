@@ -295,6 +295,26 @@ body.has-hero-photo main {
   z-index: 0;
 }
 
+/* Slow zoom-out on first load, like a reverse Ken Burns effect */
+@keyframes heroZoomOut {
+  from {
+    transform: scale(1.15);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.hero-bg--zoom {
+  animation: heroZoomOut 9s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg--zoom {
+    animation: none;
+  }
+}
+
 .hero-overlay {
   position: absolute;
   inset: 0;
@@ -312,14 +332,17 @@ body.has-hero-photo main {
 .hero--photo .hero-eyebrow {
   color: #fff;
   opacity: 0.9;
+  font-size: 1rem;
 }
 
 .hero--photo h1 {
   color: #fff;
+  font-size: clamp(3.2rem, 9vw, 6rem);
 }
 
 .hero--photo .hero-date {
   color: rgba(255, 255, 255, 0.85);
+  font-size: 1.4rem;
 }
 
 /* Countdown */
