@@ -433,7 +433,7 @@ body.has-hero-photo main {
   position: absolute;
   z-index: 2;
   top: 24%;
-  left: 42%;
+  left: 50%;
   width: 34%;
   transform: translateX(-50%);
   text-align: center;
