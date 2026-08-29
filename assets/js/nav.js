@@ -14,15 +14,14 @@ document.addEventListener('partialsLoaded', () => {
 
   const navLinks = Array.from(document.querySelectorAll('.site-nav a'));
 
-  function setActiveHash(hash) {
-    navLinks.forEach((link) => {
-      const url = new URL(link.href);
-      const isMatch = url.pathname === currentPath && url.hash === hash;
-      link.classList.toggle('active', isMatch);
-    });
-  }
+  navLinks.forEach((link) => {
+    const linkPath = new URL(link.href).pathname;
+    if (linkPath === currentPath) {
+      link.classList.add('active');
+    }
+  });
 
-  // Close the mobile menu after picking a section.
+  // Close the mobile menu after picking a page.
   navLinks.forEach((link) => {
     link.addEventListener('click', () => {
       if (navLinksWrap) navLinksWrap.classList.remove('open');
@@ -35,33 +34,16 @@ document.addEventListener('partialsLoaded', () => {
       if (currentPath === '/index.html') {
         event.preventDefault();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        history.pushState(null, '', '/index.html');
-        setActiveHash('');
       }
     });
   });
 
-  const sections = document.querySelectorAll('main section[id]');
-  if (sections.length) {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveHash('#' + entry.target.id);
-          }
-        });
-      },
-      { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
-    );
-    sections.forEach((section) => observer.observe(section));
-  } else {
-    navLinks.forEach((link) => {
-      const url = new URL(link.href);
-      if (url.pathname === currentPath && !url.hash) {
-        link.classList.add('active');
-      }
+  // Footer "Return to Top" button, present on every page.
+  document.querySelectorAll('.back-to-top').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
-  }
+  });
 
   // On the home page, the header floats transparently over the full-bleed
   // hero photo and turns solid once you scroll past it.
