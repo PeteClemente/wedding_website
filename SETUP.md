@@ -93,7 +93,6 @@ These are marked with 📝 TODO callouts directly on the site so they're easy to
 - `registry.html` — real Amazon/Target registry links, and your actual Venmo username (replace `PLACEHOLDER_USERNAME` in the honeymoon fund link)
 - `our-story.html` — your story, optional wedding party section, more gallery photos as you take them
 - `faq.html` — fill in real FAQ answers (parking, kids, dietary restrictions)
-- `partials/footer.html` — replace `PLACEHOLDER_EMAIL@example.com` (appears twice) with your real contact email — this footer is shared on every page
 
 ## 5. Site password
 
