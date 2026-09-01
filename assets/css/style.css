@@ -348,14 +348,6 @@ body.has-hero-photo main {
   padding: 3.5rem 1.5rem;
 }
 
-/* Push the title down toward the bottom of the main hero so it clears
-   faces in the middle of the photo, without affecting the short
-   countdown hero. */
-.hero--photo:not(.hero--short) {
-  align-items: flex-end;
-  padding-bottom: 2.5rem;
-}
-
 .hero-bg {
   position: absolute;
   inset: 0;
