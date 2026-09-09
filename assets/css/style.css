@@ -727,6 +727,19 @@ main section[id] {
   color: var(--color-text-soft);
 }
 
+.story-text {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.story-text p {
+  margin: 0 0 1.4rem;
+}
+
+.story-text p:last-child {
+  margin-bottom: 0;
+}
+
 /* Buttons */
 .btn {
   display: inline-block;
