@@ -19,8 +19,11 @@ document.addEventListener('partialsLoaded', () => {
 
   const rows = MAZE.length;
   const cols = MAZE[0].length;
-  const CELL = 48;
-  const PIXEL = CELL / 8;
+  const CELL = 80;
+  const SPRITE_SIZE = 32;
+  const PIXEL = 2;
+  const SPRITE_PX = SPRITE_SIZE * PIXEL;
+  const SPRITE_PAD = (CELL - SPRITE_PX) / 2;
 
   canvas.width = cols * CELL;
   canvas.height = rows * CELL;
@@ -40,43 +43,82 @@ document.addEventListener('partialsLoaded', () => {
 
   const style = getComputedStyle(document.documentElement);
   const wallColor = style.getPropertyValue('--color-sage-deep').trim() || '#4a5640';
-  const pathColor = style.getPropertyValue('--color-bg-alt').trim() || '#fff';
-  const blushColor = style.getPropertyValue('--color-blush').trim() || '#ecdfd6';
+  const wallShadow = style.getPropertyValue('--color-primary-dark').trim() || '#5f6d54';
+  const pathA = style.getPropertyValue('--color-bg').trim() || '#faf7f2';
+  const pathB = style.getPropertyValue('--color-blush').trim() || '#ecdfd6';
+  const blushColor = pathB;
 
-  // 8x8 pixel-art sprites. 0 = transparent.
+  // 32x32 pixel-art sprites, composed from layered rectangles. 0 = transparent.
   const PALETTE = {
     skin: '#e8b98a',
+    skinShade: '#d3a172',
     groomHair: '#2b2620',
     groomSuit: '#232228',
+    lapel: '#33323a',
     shirt: '#f5f0e6',
     tie: '#5f6d54',
+    shoe: '#181619',
+    eye: '#231f1c',
     brideHair: '#3a2a1e',
     veil: blushColor,
+    veilShade: '#ddc9bb',
     dress: '#f7f2ea',
+    dressShade: '#e7ddce',
     sash: '#c9a15a',
+    bouquet: '#7c8b6f',
   };
 
-  const GROOM = [
-    [0, 0, 'groomHair', 'groomHair', 'groomHair', 'groomHair', 0, 0],
-    [0, 'groomHair', 'skin', 'skin', 'skin', 'skin', 'groomHair', 0],
-    [0, 'groomHair', 'skin', 'skin', 'skin', 'skin', 'groomHair', 0],
-    [0, 0, 'shirt', 'tie', 'tie', 'shirt', 0, 0],
-    [0, 0, 'groomSuit', 'groomSuit', 'groomSuit', 'groomSuit', 0, 0],
-    [0, 'groomSuit', 'groomSuit', 'groomSuit', 'groomSuit', 'groomSuit', 'groomSuit', 0],
-    [0, 'groomSuit', 0, 0, 0, 0, 'groomSuit', 0],
-    [0, 'groomSuit', 0, 0, 0, 0, 'groomSuit', 0],
-  ];
+  function buildSprite(regions) {
+    const grid = Array.from({ length: SPRITE_SIZE }, () => new Array(SPRITE_SIZE).fill(0));
+    regions.forEach(([x0, y0, x1, y1, color]) => {
+      for (let y = y0; y < y1; y++) {
+        for (let x = x0; x < x1; x++) grid[y][x] = color;
+      }
+    });
+    return grid;
+  }
 
-  const BRIDE = [
-    [0, 0, 'veil', 'veil', 'veil', 'veil', 0, 0],
-    [0, 'veil', 'skin', 'skin', 'skin', 'skin', 'veil', 0],
-    [0, 'brideHair', 'skin', 'skin', 'skin', 'skin', 'brideHair', 0],
-    [0, 0, 'dress', 'dress', 'dress', 'dress', 0, 0],
-    [0, 'dress', 'dress', 'sash', 'sash', 'dress', 'dress', 0],
-    [0, 'dress', 'dress', 'dress', 'dress', 'dress', 'dress', 0],
-    [0, 'dress', 'dress', 0, 0, 'dress', 'dress', 0],
-    [0, 'dress', 0, 0, 0, 0, 'dress', 0],
-  ];
+  const GROOM = buildSprite([
+    [10, 1, 22, 7, 'groomHair'],
+    [8, 4, 10, 14, 'groomHair'],
+    [22, 4, 24, 14, 'groomHair'],
+    [10, 6, 22, 16, 'skin'],
+    [10, 14, 22, 16, 'skinShade'],
+    [13, 10, 15, 12, 'eye'],
+    [17, 10, 19, 12, 'eye'],
+    [13, 16, 19, 18, 'skin'],
+    [9, 18, 23, 20, 'shirt'],
+    [14, 18, 18, 27, 'tie'],
+    [8, 20, 24, 30, 'groomSuit'],
+    [8, 20, 11, 26, 'lapel'],
+    [21, 20, 24, 26, 'lapel'],
+    [5, 21, 8, 29, 'groomSuit'],
+    [24, 21, 27, 29, 'groomSuit'],
+    [4, 27, 7, 30, 'skin'],
+    [25, 27, 28, 30, 'skin'],
+    [10, 30, 15, 32, 'shoe'],
+    [17, 30, 22, 32, 'shoe'],
+  ]);
+
+  const BRIDE = buildSprite([
+    [9, 0, 23, 6, 'veil'],
+    [6, 5, 9, 20, 'veilShade'],
+    [23, 5, 26, 20, 'veilShade'],
+    [11, 6, 21, 16, 'skin'],
+    [11, 14, 21, 16, 'skinShade'],
+    [13, 10, 15, 12, 'eye'],
+    [17, 10, 19, 12, 'eye'],
+    [10, 4, 12, 14, 'brideHair'],
+    [20, 4, 22, 14, 'brideHair'],
+    [13, 16, 19, 18, 'skin'],
+    [10, 18, 22, 21, 'dress'],
+    [12, 21, 20, 23, 'sash'],
+    [9, 23, 23, 26, 'dress'],
+    [7, 26, 25, 29, 'dress'],
+    [7, 29, 25, 32, 'dressShade'],
+    [4, 24, 7, 28, 'bouquet'],
+    [3, 25, 5, 27, 'sash'],
+  ]);
 
   function drawSprite(sprite, originX, originY) {
     for (let r = 0; r < sprite.length; r++) {
@@ -98,12 +140,21 @@ document.addEventListener('partialsLoaded', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let row = 0; row < rows; row++) {
       for (let col = 0; col < MAZE[row].length; col++) {
-        ctx.fillStyle = MAZE[row][col] === '#' ? wallColor : pathColor;
-        ctx.fillRect(col * CELL, row * CELL, CELL, CELL);
+        const x = col * CELL;
+        const y = row * CELL;
+        if (MAZE[row][col] === '#') {
+          ctx.fillStyle = wallColor;
+          ctx.fillRect(x, y, CELL, CELL);
+          ctx.fillStyle = wallShadow;
+          ctx.fillRect(x, y + CELL - 6, CELL, 6);
+        } else {
+          ctx.fillStyle = (row + col) % 2 === 0 ? pathA : pathB;
+          ctx.fillRect(x, y, CELL, CELL);
+        }
       }
     }
-    drawSprite(BRIDE, goal.col * CELL + PIXEL, goal.row * CELL);
-    drawSprite(GROOM, player.col * CELL + PIXEL, player.row * CELL);
+    drawSprite(BRIDE, goal.col * CELL + SPRITE_PAD, goal.row * CELL + SPRITE_PAD);
+    drawSprite(GROOM, player.col * CELL + SPRITE_PAD, player.row * CELL + SPRITE_PAD);
   }
 
   function tryMove(dRow, dCol) {
