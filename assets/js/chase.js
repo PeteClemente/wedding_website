@@ -55,9 +55,13 @@ document.addEventListener('partialsLoaded', () => {
   const SPRITE_SIZE = 32;
   const PIXEL = 2;
   const SPRITE_PX = SPRITE_SIZE * PIXEL;
+  const VIEWPORT_ROWS = 7;
 
   canvas.width = cols * CELL;
-  canvas.height = rows * CELL;
+  canvas.height = VIEWPORT_ROWS * CELL;
+  const worldHeight = rows * CELL;
+  const maxCamY = Math.max(0, worldHeight - canvas.height);
+  let camY = 0;
 
   let start = { row: 0, col: 0 };
   let goal = { row: 0, col: 0 };
@@ -80,6 +84,8 @@ document.addEventListener('partialsLoaded', () => {
   const PALETTE = {
     skin: '#e8b98a',
     skinShade: '#d3a172',
+    mouth: '#b97b57',
+    cheek: '#e3a9a0',
     groomHair: '#2b2620',
     groomSuit: '#232228',
     lapel: '#33323a',
@@ -87,7 +93,8 @@ document.addEventListener('partialsLoaded', () => {
     tie: '#5f6d54',
     shoe: '#181619',
     eye: '#231f1c',
-    brideHair: '#3a2a1e',
+    brideHair: '#e8c579',
+    brideHairShade: '#cda758',
     veil: blushColor,
     veilShade: '#ddc9bb',
     dress: '#f7f2ea',
@@ -96,9 +103,14 @@ document.addEventListener('partialsLoaded', () => {
     bouquet: '#7c8b6f',
     guestHairA: '#3a2a1e',
     guestHairB: '#5c4a38',
+    guestHairC: '#7a5c3e',
+    guestHairD: '#9a958c',
   };
 
   const GUEST_OUTFITS = ['#8a5a5a', '#5f6d54', '#4a5a7a', '#7a5f8a'];
+  const GUEST_HAIRS = ['guestHairA', 'guestHairB', 'guestHairC', 'guestHairD'];
+  const GUEST_W = 20;
+  const GUEST_H = 26;
 
   function buildGrid(width, height, regions) {
     const grid = Array.from({ length: height }, () => new Array(width).fill(0));
@@ -111,21 +123,27 @@ document.addEventListener('partialsLoaded', () => {
   }
 
   const GROOM = buildGrid(32, 32, [
-    [10, 1, 22, 7, 'groomHair'],
-    [8, 4, 10, 14, 'groomHair'],
-    [22, 4, 24, 14, 'groomHair'],
-    [10, 6, 22, 16, 'skin'],
-    [10, 14, 22, 16, 'skinShade'],
-    [13, 10, 15, 12, 'eye'],
-    [17, 10, 19, 12, 'eye'],
-    [13, 16, 19, 18, 'skin'],
-    [9, 18, 23, 20, 'shirt'],
-    [14, 18, 18, 27, 'tie'],
-    [8, 20, 24, 30, 'groomSuit'],
-    [8, 20, 11, 26, 'lapel'],
-    [21, 20, 24, 26, 'lapel'],
-    [5, 21, 8, 29, 'groomSuit'],
-    [24, 21, 27, 29, 'groomSuit'],
+    [12, 0, 20, 1, 'groomHair'],
+    [9, 1, 23, 2, 'groomHair'],
+    [8, 2, 24, 6, 'groomHair'],
+    [8, 6, 10, 14, 'groomHair'],
+    [22, 6, 24, 14, 'groomHair'],
+    [10, 6, 22, 17, 'skin'],
+    [10, 15, 22, 17, 'skinShade'],
+    [12, 9, 15, 10, 'groomHair'],
+    [17, 9, 20, 10, 'groomHair'],
+    [13, 11, 15, 13, 'eye'],
+    [17, 11, 19, 13, 'eye'],
+    [14, 15, 18, 16, 'mouth'],
+    [13, 17, 19, 19, 'skin'],
+    [9, 19, 23, 21, 'shirt'],
+    [14, 19, 18, 28, 'tie'],
+    [8, 21, 24, 30, 'groomSuit'],
+    [8, 21, 12, 26, 'lapel'],
+    [20, 21, 24, 26, 'lapel'],
+    [9, 24, 11, 26, 'sash'],
+    [5, 22, 8, 29, 'groomSuit'],
+    [24, 22, 27, 29, 'groomSuit'],
     [4, 27, 7, 30, 'skin'],
     [25, 27, 28, 30, 'skin'],
     [10, 30, 15, 32, 'shoe'],
@@ -133,39 +151,72 @@ document.addEventListener('partialsLoaded', () => {
   ]);
 
   const BRIDE = buildGrid(32, 32, [
-    [9, 0, 23, 6, 'veil'],
-    [6, 5, 9, 20, 'veilShade'],
-    [23, 5, 26, 20, 'veilShade'],
-    [11, 6, 21, 16, 'skin'],
-    [11, 14, 21, 16, 'skinShade'],
-    [13, 10, 15, 12, 'eye'],
-    [17, 10, 19, 12, 'eye'],
-    [10, 4, 12, 14, 'brideHair'],
-    [20, 4, 22, 14, 'brideHair'],
-    [13, 16, 19, 18, 'skin'],
-    [10, 18, 22, 21, 'dress'],
-    [12, 21, 20, 23, 'sash'],
-    [9, 23, 23, 26, 'dress'],
-    [7, 26, 25, 29, 'dress'],
-    [7, 29, 25, 32, 'dressShade'],
-    [4, 24, 7, 28, 'bouquet'],
-    [3, 25, 5, 27, 'sash'],
+    [10, 0, 22, 1, 'veil'],
+    [8, 1, 24, 3, 'veil'],
+    [7, 3, 25, 7, 'veil'],
+    [6, 7, 9, 21, 'veilShade'],
+    [23, 7, 26, 21, 'veilShade'],
+    [11, 4, 21, 6, 'brideHair'],
+    [9, 5, 11, 15, 'brideHair'],
+    [21, 5, 23, 15, 'brideHair'],
+    [11, 6, 21, 17, 'skin'],
+    [11, 15, 21, 17, 'skinShade'],
+    [13, 9, 15, 10, 'brideHairShade'],
+    [17, 9, 19, 10, 'brideHairShade'],
+    [13, 11, 15, 13, 'eye'],
+    [17, 11, 19, 13, 'eye'],
+    [12, 13, 14, 14, 'cheek'],
+    [20, 13, 22, 14, 'cheek'],
+    [14, 15, 18, 16, 'mouth'],
+    [13, 17, 19, 19, 'skin'],
+    [10, 19, 22, 22, 'dress'],
+    [12, 22, 20, 24, 'sash'],
+    [9, 24, 23, 27, 'dress'],
+    [7, 27, 25, 30, 'dress'],
+    [7, 30, 25, 32, 'dressShade'],
+    [4, 25, 7, 29, 'bouquet'],
+    [3, 26, 5, 28, 'sash'],
   ]);
 
-  function buildGuest(outfit, hair) {
-    return buildGrid(16, 20, [
-      [4, 0, 12, 3, hair],
-      [4, 3, 12, 9, 'skin'],
-      [6, 5, 7, 6, 'eye'],
-      [9, 5, 10, 6, 'eye'],
-      [5, 9, 11, 11, 'skin'],
-      [3, 11, 13, 20, outfit],
+  function buildGuestSuit(hair, suit) {
+    return buildGrid(GUEST_W, GUEST_H, [
+      [6, 0, 14, 3, hair],
+      [5, 3, 7, 9, hair],
+      [13, 3, 15, 9, hair],
+      [7, 3, 13, 11, 'skin'],
+      [8, 6, 9, 7, 'eye'],
+      [11, 6, 12, 7, 'eye'],
+      [8, 11, 12, 13, 'skin'],
+      [6, 13, 14, 15, 'shirt'],
+      [9, 15, 11, 21, 'tie'],
+      [5, 15, 15, 26, suit],
+      [3, 16, 5, 23, suit],
+      [15, 16, 17, 23, suit],
+      [2, 21, 4, 24, 'skin'],
+      [16, 21, 18, 24, 'skin'],
     ]);
   }
 
-  const GUEST_SPRITES = GUEST_OUTFITS.map((outfit, i) =>
-    buildGuest(outfit, i % 2 === 0 ? 'guestHairA' : 'guestHairB')
-  );
+  function buildGuestDress(hair, dress) {
+    return buildGrid(GUEST_W, GUEST_H, [
+      [6, 0, 14, 3, hair],
+      [5, 3, 7, 9, hair],
+      [13, 3, 15, 9, hair],
+      [7, 3, 13, 11, 'skin'],
+      [8, 6, 9, 7, 'eye'],
+      [11, 6, 12, 7, 'eye'],
+      [8, 11, 12, 13, 'skin'],
+      [6, 13, 14, 16, dress],
+      [8, 16, 12, 17, 'sash'],
+      [4, 16, 16, 22, dress],
+      [3, 22, 17, 26, dress],
+    ]);
+  }
+
+  const GUEST_SPRITES = GUEST_OUTFITS.map((outfit, i) => {
+    const hair = GUEST_HAIRS[i % GUEST_HAIRS.length];
+    return i % 2 === 0 ? buildGuestSuit(hair, outfit) : buildGuestDress(hair, outfit);
+  });
 
   function drawGrid(grid, originX, originY, pixel) {
     for (let r = 0; r < grid.length; r++) {
@@ -256,12 +307,21 @@ document.addEventListener('partialsLoaded', () => {
     return a.x < b.x + b.w && a.x + a.w > b.x && a.y < b.y + b.h && a.y + a.h > b.y;
   }
 
+  function updateCamera() {
+    const target = Math.max(0, Math.min(player.y - canvas.height / 2, maxCamY));
+    camY += (target - camY) * 0.14;
+    if (Math.abs(target - camY) < 0.5) camY = target;
+  }
+
   function draw() {
+    const cam = Math.round(camY);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    for (let row = 0; row < rows; row++) {
+    const firstRow = Math.max(0, Math.floor(cam / CELL) - 1);
+    const lastRow = Math.min(rows - 1, Math.ceil((cam + canvas.height) / CELL));
+    for (let row = firstRow; row <= lastRow; row++) {
       for (let col = 0; col < MAZE[row].length; col++) {
         const x = col * CELL;
-        const y = row * CELL;
+        const y = row * CELL - cam;
         if (MAZE[row][col] === '#') {
           ctx.fillStyle = wallColor;
           ctx.fillRect(x, y, CELL, CELL);
@@ -278,17 +338,17 @@ document.addEventListener('partialsLoaded', () => {
       }
     }
 
-    drawGrid(BRIDE, goal.col * CELL + (CELL - SPRITE_PX) / 2, goal.row * CELL + (CELL - SPRITE_PX) / 2, PIXEL);
+    drawGrid(BRIDE, goal.col * CELL + (CELL - SPRITE_PX) / 2, goal.row * CELL + (CELL - SPRITE_PX) / 2 - cam, PIXEL);
 
     obstacles.forEach((o) => {
-      const gw = 16 * 2;
-      const gh = 20 * 2;
-      drawGrid(o.sprite, o.x + (o.w - gw) / 2, o.y + (o.h - gh) / 2 - 6, 2);
+      const gw = GUEST_W * 2;
+      const gh = GUEST_H * 2;
+      drawGrid(o.sprite, o.x + (o.w - gw) / 2, o.y + (o.h - gh) / 2 - 6 - cam, 2);
     });
 
     const flashing = Date.now() < invulnerableUntil && Math.floor(Date.now() / 100) % 2 === 0;
     if (!flashing) {
-      drawGrid(GROOM, player.x - SPRITE_PX / 2, player.y - SPRITE_PX + 10, PIXEL);
+      drawGrid(GROOM, player.x - SPRITE_PX / 2, player.y - SPRITE_PX + 10 - cam, PIXEL);
     }
   }
 
@@ -395,12 +455,14 @@ document.addEventListener('partialsLoaded', () => {
       setTime(elapsed);
     }
 
+    updateCamera();
     draw();
     requestAnimationFrame(loop);
   }
 
   restartBtn.addEventListener('click', () => {
     resetPlayer(start);
+    camY = Math.max(0, Math.min(player.y - canvas.height / 2, maxCamY));
     won = false;
     elapsed = 0;
     bumps = 0;
