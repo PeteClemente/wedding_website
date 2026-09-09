@@ -72,7 +72,7 @@ document.addEventListener('partialsLoaded', () => {
     window.addEventListener('resize', updateHeaderState);
   }
 
-  // Hidden easter eggs: click an "&" five times in a row to find a game.
+  // Hidden easter eggs: click an "&" four times in a row (for 4/4) to find a game.
   function wireSecretLink(elementId, destination) {
     const el = document.getElementById(elementId);
     if (!el) return;
@@ -89,7 +89,7 @@ document.addEventListener('partialsLoaded', () => {
         clicks = 0;
       }, 2500);
 
-      if (clicks >= 5) {
+      if (clicks >= 4) {
         clicks = 0;
         window.location.href = destination;
       }
