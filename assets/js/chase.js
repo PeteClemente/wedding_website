@@ -82,7 +82,7 @@ document.addEventListener('partialsLoaded', () => {
     },
     {
       label: 'Level 3 · Down the Aisle',
-      guestsPerLane: 3, speedBase: 130, speedStep: 25,
+      guestsPerLane: 2, speedBase: 115, speedStep: 20,
       maze: [
         '#########',
         '#S......#',
