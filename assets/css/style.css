@@ -1132,6 +1132,14 @@ main section[id] {
   color: var(--color-primary-dark);
 }
 
+.chase-level {
+  text-align: center;
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  color: var(--color-primary-dark);
+  margin-bottom: 0.75rem;
+}
+
 .chase-board {
   display: flex;
   justify-content: center;

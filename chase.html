@@ -15,7 +15,9 @@
       <div class="container">
         <p class="hero-eyebrow" style="text-align:center;">While You Wait</p>
         <h2 class="script" style="text-align:center;">Get to the Altar</h2>
-        <p class="section-intro">Help the groom cross the garden to the bride - mind the wandering guests. Arrow keys / WASD, or the buttons below on mobile.</p>
+        <p class="section-intro">Help the groom cross the reception lawn to the bride through three rounds of wandering guests - mind the crowd. Arrow keys / WASD, or the buttons below on mobile.</p>
+
+        <p class="chase-level" id="chase-level">Level 1</p>
 
         <div class="game-stats">
           <span>Time: <strong id="chase-time">0</strong>s</span>
@@ -38,9 +40,10 @@
           <button class="btn btn-secondary" type="button" data-dir="right" aria-label="Move right">&rarr;</button>
         </div>
 
-        <p class="game-win" id="chase-win" hidden>He made it! 🤍 See you at the altar, Peter &amp; Mary.</p>
+        <p class="game-win" id="chase-win" hidden></p>
 
         <p style="text-align:center; margin-top: 1.5rem;">
+          <button class="btn" id="chase-next" type="button" hidden>Next Level</button>
           <button class="btn btn-secondary" id="chase-restart" type="button">Restart</button>
         </p>
       </div>

@@ -6,6 +6,8 @@ document.addEventListener('partialsLoaded', () => {
   const bumpsEl = document.getElementById('chase-bumps');
   const winEl = document.getElementById('chase-win');
   const restartBtn = document.getElementById('chase-restart');
+  const nextBtn = document.getElementById('chase-next');
+  const levelEl = document.getElementById('chase-level');
   const dpad = document.querySelector('.chase-dpad');
   const confettiEl = document.getElementById('chase-confetti');
 
@@ -30,47 +32,54 @@ document.addEventListener('partialsLoaded', () => {
     if (confettiEl) confettiEl.innerHTML = '';
   }
 
-  // Garden hedge maze, then a row of open "lawn" leading into three
-  // Frogger-style crossing lanes, then the altar.
-  const MAZE = [
-    '#########',
-    '#S..#...#',
-    '#.#.#.#.#',
-    '#.#...#.#',
-    '#.###.#.#',
-    '#.......#',
-    '#.......#',
-    '#.......#', // lane 1
-    '#.......#', // lane 2
-    '#.......#', // lane 3
-    '#...B...#',
-    '#########',
+  // Three Frogger-style reception lawns, each with more crossing lanes
+  // and a livelier crowd than the last, leading up to the altar.
+  const LEVELS = [
+    { label: 'Level 1 · The Garden Path', numLanes: 2, guestsPerLane: 2, speedBase: 65, speedStep: 20 },
+    { label: 'Level 2 · Crowded Reception', numLanes: 4, guestsPerLane: 2, speedBase: 100, speedStep: 25 },
+    { label: 'Level 3 · Last Dance', numLanes: 5, guestsPerLane: 3, speedBase: 130, speedStep: 25 },
   ];
-  const LANE_ROWS = [7, 8, 9];
-  const CHECKPOINT = { row: 6, col: 4 };
 
-  const rows = MAZE.length;
-  const cols = MAZE[0].length;
+  const COLS = 9;
   const CELL = 80;
   const SPRITE_SIZE = 32;
   const PIXEL = 2;
   const SPRITE_PX = SPRITE_SIZE * PIXEL;
   const VIEWPORT_ROWS = 7;
 
-  canvas.width = cols * CELL;
+  canvas.width = COLS * CELL;
   canvas.height = VIEWPORT_ROWS * CELL;
-  const worldHeight = rows * CELL;
-  const maxCamY = Math.max(0, worldHeight - canvas.height);
+
+  function buildLevelLayout(numLanes) {
+    const mid = Math.floor(COLS / 2);
+    const wallRow = '#'.repeat(COLS);
+    const openRow = '#' + '.'.repeat(COLS - 2) + '#';
+    const startRow = '#' + 'S' + '.'.repeat(COLS - 3) + '#';
+    const goalRow = openRow.slice(0, mid) + 'B' + openRow.slice(mid + 1);
+
+    const maze = [wallRow, startRow, openRow, openRow];
+    const laneRows = [];
+    for (let i = 0; i < numLanes; i++) {
+      laneRows.push(maze.length);
+      maze.push(openRow);
+    }
+    maze.push(goalRow);
+    maze.push(wallRow);
+
+    return { maze, laneRows, checkpoint: { row: 3, col: mid } };
+  }
+
+  let MAZE = [];
+  let LANE_ROWS = [];
+  let CHECKPOINT = { row: 0, col: 0 };
+  let rows = 0;
+  let worldHeight = 0;
+  let maxCamY = 0;
   let camY = 0;
+  let currentLevelIndex = 0;
 
   let start = { row: 0, col: 0 };
   let goal = { row: 0, col: 0 };
-  MAZE.forEach((line, row) => {
-    for (let col = 0; col < line.length; col++) {
-      if (line[col] === 'S') start = { row, col };
-      if (line[col] === 'B') goal = { row, col };
-    }
-  });
 
   const style = getComputedStyle(document.documentElement);
   const wallColor = style.getPropertyValue('--color-sage-deep').trim() || '#4a5640';
@@ -107,7 +116,7 @@ document.addEventListener('partialsLoaded', () => {
     guestHairD: '#9a958c',
   };
 
-  const GUEST_OUTFITS = ['#8a5a5a', '#5f6d54', '#4a5a7a', '#7a5f8a'];
+  const GUEST_OUTFITS = ['#33512e', '#4f7a45', '#6f9a5f', '#8fb87c', '#3a6b52'];
   const GUEST_HAIRS = ['guestHairA', 'guestHairB', 'guestHairC', 'guestHairD'];
   const GUEST_W = 20;
   const GUEST_H = 26;
@@ -223,7 +232,7 @@ document.addEventListener('partialsLoaded', () => {
       for (let c = 0; c < grid[r].length; c++) {
         const key = grid[r][c];
         if (!key) continue;
-        ctx.fillStyle = PALETTE[key];
+        ctx.fillStyle = PALETTE[key] || key;
         ctx.fillRect(originX + c * pixel, originY + r * pixel, pixel, pixel);
       }
     }
@@ -270,14 +279,14 @@ document.addEventListener('partialsLoaded', () => {
 
   // Obstacles: wandering guests sliding back and forth across each lane.
   const laneLeft = CELL + 4;
-  const laneRight = (cols - 1) * CELL - 4;
+  const laneRight = (COLS - 1) * CELL - 4;
 
-  function makeObstacles() {
+  function makeObstacles(config) {
     const list = [];
     LANE_ROWS.forEach((row, laneIndex) => {
       const dir = laneIndex % 2 === 0 ? 1 : -1;
-      const speed = 90 + laneIndex * 30;
-      const count = 2;
+      const speed = config.speedBase + laneIndex * config.speedStep;
+      const count = config.guestsPerLane;
       for (let i = 0; i < count; i++) {
         list.push({
           row,
@@ -293,7 +302,7 @@ document.addEventListener('partialsLoaded', () => {
     return list;
   }
 
-  let obstacles = makeObstacles();
+  let obstacles = [];
 
   function updateObstacles(dt) {
     obstacles.forEach((o) => {
@@ -434,7 +443,13 @@ document.addEventListener('partialsLoaded', () => {
     const goalRect = { x: goal.col * CELL + 12, y: goal.row * CELL + 12, w: CELL - 24, h: CELL - 24 };
     if (rectsOverlap(hb, goalRect)) {
       won = true;
+      const isLast = currentLevelIndex === LEVELS.length - 1;
+      winEl.textContent = isLast
+        ? 'He made it! 🤍 See you at the altar, Peter & Mary.'
+        : `Level ${currentLevelIndex + 1} complete! On to ${LEVELS[currentLevelIndex + 1].label}.`;
       winEl.hidden = false;
+      nextBtn.textContent = isLast ? 'Play Again' : 'Next Level';
+      nextBtn.hidden = false;
       spawnConfetti();
     }
   }
@@ -460,7 +475,28 @@ document.addEventListener('partialsLoaded', () => {
     requestAnimationFrame(loop);
   }
 
-  restartBtn.addEventListener('click', () => {
+  function loadLevel(index) {
+    currentLevelIndex = index;
+    const config = LEVELS[index];
+    const layout = buildLevelLayout(config.numLanes);
+    MAZE = layout.maze;
+    LANE_ROWS = layout.laneRows;
+    CHECKPOINT = layout.checkpoint;
+    rows = MAZE.length;
+
+    MAZE.forEach((line, row) => {
+      for (let col = 0; col < line.length; col++) {
+        if (line[col] === 'S') start = { row, col };
+        if (line[col] === 'B') goal = { row, col };
+      }
+    });
+
+    worldHeight = rows * CELL;
+    maxCamY = Math.max(0, worldHeight - canvas.height);
+    obstacles = makeObstacles(config);
+
+    if (levelEl) levelEl.textContent = config.label;
+
     resetPlayer(start);
     camY = Math.max(0, Math.min(player.y - canvas.height / 2, maxCamY));
     won = false;
@@ -471,12 +507,19 @@ document.addEventListener('partialsLoaded', () => {
     timeEl.textContent = '0';
     bumpsEl.textContent = '0';
     winEl.hidden = true;
+    nextBtn.hidden = true;
     clearConfetti();
-    obstacles = makeObstacles();
     draw();
+  }
+
+  restartBtn.addEventListener('click', () => {
+    loadLevel(currentLevelIndex);
   });
 
-  resetPlayer(start);
-  draw();
+  nextBtn.addEventListener('click', () => {
+    loadLevel((currentLevelIndex + 1) % LEVELS.length);
+  });
+
+  loadLevel(0);
   requestAnimationFrame(loop);
 });
