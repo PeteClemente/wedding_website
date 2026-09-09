@@ -46,10 +46,11 @@ document.addEventListener('partialsLoaded', () => {
         '#.......#',
         '#...#...#',
         '#.#...#.#',
+        '#...#...#',
         '#...B...#',
         '#########',
       ],
-      laneRows: [4, 5],
+      laneRows: [4, 5, 6],
       checkpoint: { row: 3, col: 4 },
       wallColor: '#4a5640',
       wallShadow: '#5f6d54',
@@ -69,10 +70,11 @@ document.addEventListener('partialsLoaded', () => {
         '#....#..#',
         '#..#....#',
         '#....#..#',
+        '#..#....#',
         '#...B...#',
         '#########',
       ],
-      laneRows: [4, 5, 6, 7],
+      laneRows: [4, 5, 6, 7, 8],
       checkpoint: { row: 3, col: 4 },
       wallColor: '#8a5a34',
       wallShadow: '#6b4527',
@@ -83,6 +85,9 @@ document.addEventListener('partialsLoaded', () => {
     {
       label: 'Level 3 · Down the Aisle',
       guestsPerLane: 2, speedBase: 115, speedStep: 20,
+      // Lanes 1 and 3 are the open transept rows (no pews) - guests there
+      // get a speed boost since they have the full width to cross in.
+      laneSpeedMultipliers: [1, 1.4, 1, 1.4, 1],
       maze: [
         '#########',
         '#S......#',
@@ -332,7 +337,8 @@ document.addEventListener('partialsLoaded', () => {
     const list = [];
     LANE_ROWS.forEach((row, laneIndex) => {
       const dir = laneIndex % 2 === 0 ? 1 : -1;
-      const speed = config.speedBase + laneIndex * config.speedStep;
+      const multiplier = (config.laneSpeedMultipliers && config.laneSpeedMultipliers[laneIndex]) || 1;
+      const speed = (config.speedBase + laneIndex * config.speedStep) * multiplier;
       const count = config.guestsPerLane;
       for (let i = 0; i < count; i++) {
         list.push({
