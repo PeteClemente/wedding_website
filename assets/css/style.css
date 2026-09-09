@@ -1125,12 +1125,68 @@ main section[id] {
   justify-content: center;
 }
 
+.chase-stage {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+
 .chase-board canvas {
+  display: block;
   max-width: 100%;
   height: auto;
   border: 1px solid var(--color-border);
   border-radius: 8px;
   image-rendering: pixelated;
+}
+
+.chase-confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  border-radius: 8px;
+}
+
+.confetti-heart {
+  position: absolute;
+  top: -20px;
+  width: 12px;
+  height: 12px;
+  background: var(--heart-color, var(--color-accent));
+  transform: rotate(-45deg);
+  animation: confettiFall linear forwards;
+}
+
+.confetti-heart::before,
+.confetti-heart::after {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.confetti-heart::before {
+  top: -6px;
+  left: 0;
+}
+
+.confetti-heart::after {
+  top: 0;
+  left: 6px;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(0) rotate(-45deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(var(--fall-distance, 400px)) rotate(300deg);
+    opacity: 0;
+  }
 }
 
 .chase-dpad {

@@ -6,6 +6,28 @@ document.addEventListener('partialsLoaded', () => {
   const winEl = document.getElementById('chase-win');
   const restartBtn = document.getElementById('chase-restart');
   const dpad = document.querySelector('.chase-dpad');
+  const confettiEl = document.getElementById('chase-confetti');
+
+  function spawnConfetti() {
+    if (!confettiEl) return;
+    const colors = ['#c9a15a', '#7c8b6f', '#c98a8a', '#5f6d54'];
+    const fallDistance = confettiEl.clientHeight + 60;
+    for (let i = 0; i < 28; i++) {
+      const heart = document.createElement('span');
+      heart.className = 'confetti-heart';
+      heart.style.left = Math.random() * 96 + '%';
+      heart.style.setProperty('--heart-color', colors[i % colors.length]);
+      heart.style.setProperty('--fall-distance', fallDistance + 'px');
+      heart.style.animationDuration = 1.4 + Math.random() * 1.2 + 's';
+      heart.style.animationDelay = Math.random() * 0.5 + 's';
+      heart.addEventListener('animationend', () => heart.remove());
+      confettiEl.appendChild(heart);
+    }
+  }
+
+  function clearConfetti() {
+    if (confettiEl) confettiEl.innerHTML = '';
+  }
 
   const MAZE = [
     '#########',
@@ -168,6 +190,7 @@ document.addEventListener('partialsLoaded', () => {
     if (player.row === goal.row && player.col === goal.col) {
       won = true;
       winEl.hidden = false;
+      spawnConfetti();
     }
   }
 
@@ -203,6 +226,7 @@ document.addEventListener('partialsLoaded', () => {
     won = false;
     movesEl.textContent = '0';
     winEl.hidden = true;
+    clearConfetti();
     draw();
   });
 
