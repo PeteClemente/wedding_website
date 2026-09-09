@@ -112,6 +112,14 @@ a { color: var(--color-primary-dark); }
   color: #fff;
 }
 
+/* Enlarge the "&" tap target invisibly, since it takes 5 quick clicks
+   to find the hidden game and it's a small character to hit precisely. */
+#brand-amp {
+  display: inline-block;
+  padding: 0.6rem 0.5rem;
+  margin: -0.6rem -0.5rem;
+}
+
 .nav-toggle {
   display: none;
   flex-direction: column;
@@ -121,7 +129,7 @@ a { color: var(--color-primary-dark); }
   cursor: pointer;
   padding: 0.5rem;
   position: absolute;
-  right: 0;
+  right: 1.5rem;
   top: 50%;
   transform: translateY(-50%);
 }
@@ -181,10 +189,11 @@ a { color: var(--color-primary-dark); }
 @media (max-width: 720px) {
   .site-header-inner {
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
-  .brand { order: 1; justify-self: auto; }
+  .brand { order: 0; justify-self: auto; }
 
   .nav-toggle { display: flex; }
 
@@ -359,6 +368,10 @@ body.has-hero-photo main {
   z-index: 0;
 }
 
+.hero-bg--color {
+  filter: none;
+}
+
 /* Slow zoom-out on first load, like a reverse Ken Burns effect */
 @keyframes heroZoomOut {
   from {
@@ -396,17 +409,17 @@ body.has-hero-photo main {
 .hero--photo .hero-eyebrow {
   color: #fff;
   opacity: 0.9;
-  font-size: 1rem;
+  font-size: 1.15rem;
 }
 
 .hero--photo h1 {
   color: #fff;
-  font-size: clamp(3.2rem, 9vw, 6rem);
+  font-size: clamp(3.8rem, 11vw, 7.5rem);
 }
 
 .hero--photo .hero-date {
   color: rgba(255, 255, 255, 0.85);
-  font-size: 1.4rem;
+  font-size: 1.65rem;
 }
 
 /* Countdown */

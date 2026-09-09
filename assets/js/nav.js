@@ -1,10 +1,28 @@
 document.addEventListener('partialsLoaded', () => {
   const toggle = document.querySelector('.nav-toggle');
   const navLinksWrap = document.querySelector('.site-nav-links');
+  const header = document.querySelector('.site-header');
+  const hero = document.querySelector('main .hero--photo');
+  const hasHeroOverlay = document.body.classList.contains('has-hero-photo') && header && hero;
+
+  function updateHeaderState() {
+    if (!hasHeroOverlay) return;
+    const threshold = Math.max(hero.offsetHeight - 90, 100);
+    header.classList.toggle('site-header--overlay', window.scrollY < threshold);
+  }
 
   if (toggle && navLinksWrap) {
     toggle.addEventListener('click', () => {
-      navLinksWrap.classList.toggle('open');
+      const isOpen = navLinksWrap.classList.toggle('open');
+      if (hasHeroOverlay) {
+        // Keep the dropdown on a solid background instead of showing it
+        // transparently over the hero photo.
+        if (isOpen) {
+          header.classList.remove('site-header--overlay');
+        } else {
+          updateHeaderState();
+        }
+      }
     });
   }
 
@@ -25,6 +43,7 @@ document.addEventListener('partialsLoaded', () => {
   navLinks.forEach((link) => {
     link.addEventListener('click', () => {
       if (navLinksWrap) navLinksWrap.classList.remove('open');
+      updateHeaderState();
     });
   });
 
@@ -47,20 +66,10 @@ document.addEventListener('partialsLoaded', () => {
 
   // On the home page, the header floats transparently over the full-bleed
   // hero photo and turns solid once you scroll past it.
-  if (document.body.classList.contains('has-hero-photo')) {
-    const header = document.querySelector('.site-header');
-    const hero = document.querySelector('main .hero--photo');
-    if (header && hero) {
-      const threshold = () => Math.max(hero.offsetHeight - 90, 100);
-
-      function updateHeaderState() {
-        header.classList.toggle('site-header--overlay', window.scrollY < threshold());
-      }
-
-      updateHeaderState();
-      window.addEventListener('scroll', updateHeaderState, { passive: true });
-      window.addEventListener('resize', updateHeaderState);
-    }
+  if (hasHeroOverlay) {
+    updateHeaderState();
+    window.addEventListener('scroll', updateHeaderState, { passive: true });
+    window.addEventListener('resize', updateHeaderState);
   }
 
   // Hidden easter egg: click the "&" in the logo 5 times to find the game.
