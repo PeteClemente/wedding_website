@@ -86,7 +86,7 @@ document.addEventListener('partialsLoaded', () => {
       clearTimeout(resetTimer);
       resetTimer = setTimeout(() => {
         clicks = 0;
-      }, 1500);
+      }, 2500);
 
       if (clicks >= 5) {
         clicks = 0;
