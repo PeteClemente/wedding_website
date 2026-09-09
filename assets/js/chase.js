@@ -32,12 +32,78 @@ document.addEventListener('partialsLoaded', () => {
     if (confettiEl) confettiEl.innerHTML = '';
   }
 
-  // Three Frogger-style reception lawns, each with more crossing lanes
-  // and a livelier crowd than the last, leading up to the altar.
+  // Three Frogger-style crossings, each shaped and dressed like a real stop
+  // on the wedding day - hedge-lined garden, reception hall, church aisle -
+  // with the walls of each room woven right into the crossing lanes.
   const LEVELS = [
-    { label: 'Level 1 · The Garden Path', numLanes: 2, guestsPerLane: 2, speedBase: 65, speedStep: 20 },
-    { label: 'Level 2 · Crowded Reception', numLanes: 4, guestsPerLane: 2, speedBase: 100, speedStep: 25 },
-    { label: 'Level 3 · Last Dance', numLanes: 5, guestsPerLane: 3, speedBase: 130, speedStep: 25 },
+    {
+      label: 'Level 1 · The Garden Path',
+      guestsPerLane: 2, speedBase: 65, speedStep: 20,
+      maze: [
+        '#########',
+        '#S......#',
+        '#.#...#.#',
+        '#.......#',
+        '#...#...#',
+        '#.#...#.#',
+        '#...B...#',
+        '#########',
+      ],
+      laneRows: [4, 5],
+      checkpoint: { row: 3, col: 4 },
+      wallColor: '#4a5640',
+      wallShadow: '#5f6d54',
+      pathA: '#eef2e2',
+      pathB: '#dbe7c9',
+      laneTint: 'rgba(201, 161, 90, 0.16)',
+    },
+    {
+      label: 'Level 2 · Crowded Reception',
+      guestsPerLane: 2, speedBase: 100, speedStep: 25,
+      maze: [
+        '#########',
+        '#S......#',
+        '#...#...#',
+        '#.......#',
+        '#..#....#',
+        '#....#..#',
+        '#..#....#',
+        '#....#..#',
+        '#...B...#',
+        '#########',
+      ],
+      laneRows: [4, 5, 6, 7],
+      checkpoint: { row: 3, col: 4 },
+      wallColor: '#8a5a34',
+      wallShadow: '#6b4527',
+      pathA: '#f4e8cb',
+      pathB: '#e6cd94',
+      laneTint: 'rgba(201, 138, 138, 0.2)',
+    },
+    {
+      label: 'Level 3 · Down the Aisle',
+      guestsPerLane: 3, speedBase: 130, speedStep: 25,
+      maze: [
+        '#########',
+        '#S......#',
+        '#.##.##.#',
+        '#.......#',
+        '#.##.##.#',
+        '#.......#',
+        '#.##.##.#',
+        '#.......#',
+        '#.##.##.#',
+        '#...B...#',
+        '#########',
+      ],
+      laneRows: [4, 5, 6, 7, 8],
+      checkpoint: { row: 3, col: 4 },
+      wallColor: '#3a2c22',
+      wallShadow: '#251a13',
+      pathA: '#e6e1d5',
+      pathB: '#d1cabb',
+      laneTint: 'rgba(122, 47, 47, 0.22)',
+    },
   ];
 
   const COLS = 9;
@@ -50,25 +116,6 @@ document.addEventListener('partialsLoaded', () => {
   canvas.width = COLS * CELL;
   canvas.height = VIEWPORT_ROWS * CELL;
 
-  function buildLevelLayout(numLanes) {
-    const mid = Math.floor(COLS / 2);
-    const wallRow = '#'.repeat(COLS);
-    const openRow = '#' + '.'.repeat(COLS - 2) + '#';
-    const startRow = '#' + 'S' + '.'.repeat(COLS - 3) + '#';
-    const goalRow = openRow.slice(0, mid) + 'B' + openRow.slice(mid + 1);
-
-    const maze = [wallRow, startRow, openRow, openRow];
-    const laneRows = [];
-    for (let i = 0; i < numLanes; i++) {
-      laneRows.push(maze.length);
-      maze.push(openRow);
-    }
-    maze.push(goalRow);
-    maze.push(wallRow);
-
-    return { maze, laneRows, checkpoint: { row: 3, col: mid } };
-  }
-
   let MAZE = [];
   let LANE_ROWS = [];
   let CHECKPOINT = { row: 0, col: 0 };
@@ -77,17 +124,17 @@ document.addEventListener('partialsLoaded', () => {
   let maxCamY = 0;
   let camY = 0;
   let currentLevelIndex = 0;
+  let wallColor = '#4a5640';
+  let wallShadow = '#5f6d54';
+  let pathA = '#faf7f2';
+  let pathB = '#ecdfd6';
+  let laneTint = 'rgba(201, 161, 90, 0.14)';
 
   let start = { row: 0, col: 0 };
   let goal = { row: 0, col: 0 };
 
   const style = getComputedStyle(document.documentElement);
-  const wallColor = style.getPropertyValue('--color-sage-deep').trim() || '#4a5640';
-  const wallShadow = style.getPropertyValue('--color-primary-dark').trim() || '#5f6d54';
-  const pathA = style.getPropertyValue('--color-bg').trim() || '#faf7f2';
-  const pathB = style.getPropertyValue('--color-blush').trim() || '#ecdfd6';
-  const laneTint = 'rgba(201, 161, 90, 0.14)';
-  const blushColor = pathB;
+  const blushColor = style.getPropertyValue('--color-blush').trim() || '#ecdfd6';
 
   // Pixel-art sprites, composed from layered rectangles. 0 = transparent.
   const PALETTE = {
@@ -478,11 +525,15 @@ document.addEventListener('partialsLoaded', () => {
   function loadLevel(index) {
     currentLevelIndex = index;
     const config = LEVELS[index];
-    const layout = buildLevelLayout(config.numLanes);
-    MAZE = layout.maze;
-    LANE_ROWS = layout.laneRows;
-    CHECKPOINT = layout.checkpoint;
+    MAZE = config.maze;
+    LANE_ROWS = config.laneRows;
+    CHECKPOINT = config.checkpoint;
     rows = MAZE.length;
+    wallColor = config.wallColor;
+    wallShadow = config.wallShadow;
+    pathA = config.pathA;
+    pathB = config.pathB;
+    laneTint = config.laneTint;
 
     MAZE.forEach((line, row) => {
       for (let col = 0; col < line.length; col++) {
