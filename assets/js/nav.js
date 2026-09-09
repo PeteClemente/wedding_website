@@ -72,13 +72,14 @@ document.addEventListener('partialsLoaded', () => {
     window.addEventListener('resize', updateHeaderState);
   }
 
-  // Hidden easter egg: click the "&" in the logo 5 times to find the game.
-  const amp = document.getElementById('brand-amp');
-  if (amp) {
+  // Hidden easter eggs: click an "&" five times in a row to find a game.
+  function wireSecretLink(elementId, destination) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
     let clicks = 0;
     let resetTimer = null;
 
-    amp.addEventListener('click', (event) => {
+    el.addEventListener('click', (event) => {
       event.preventDefault();
       event.stopPropagation();
 
@@ -90,8 +91,11 @@ document.addEventListener('partialsLoaded', () => {
 
       if (clicks >= 5) {
         clicks = 0;
-        window.location.href = '/game.html';
+        window.location.href = destination;
       }
     });
   }
+
+  wireSecretLink('brand-amp', '/game.html');
+  wireSecretLink('footer-amp', '/chase.html');
 });
