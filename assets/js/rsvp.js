@@ -14,14 +14,14 @@
 
     const formData = new FormData(form);
 
-    if (!formData.get('name') || !formData.get('attending')) {
-      statusEl.textContent = 'Please fill in your name and let us know if you can make it.';
+    if (!formData.get('name') || !formData.get('address') || !formData.get('city') || !formData.get('state') || !formData.get('zip')) {
+      statusEl.textContent = 'Please fill in your name and mailing address.';
       statusEl.classList.add('error');
       return;
     }
 
     if (APPS_SCRIPT_URL.includes('PASTE_YOUR')) {
-      statusEl.textContent = 'RSVP submissions aren\'t connected yet — see SETUP.md to finish setup.';
+      statusEl.textContent = 'Submissions aren\'t connected yet — see SETUP.md to finish setup.';
       statusEl.classList.add('error');
       return;
     }
@@ -39,10 +39,10 @@
       });
 
       form.hidden = true;
-      statusEl.textContent = 'Thank you! We\'ve received your RSVP.';
+      statusEl.textContent = 'Thank you! We\'ve added your address to our list.';
       statusEl.classList.add('success');
     } catch (err) {
-      statusEl.textContent = 'Something went wrong sending your RSVP — please try again or reach out to us directly.';
+      statusEl.textContent = 'Something went wrong sending your info — please try again or reach out to us directly.';
       statusEl.classList.add('error');
     } finally {
       submitBtn.disabled = false;
