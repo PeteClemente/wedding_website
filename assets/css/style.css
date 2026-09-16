@@ -812,6 +812,10 @@ main section[id] {
   margin-bottom: 0.5rem;
 }
 
+.card p {
+  color: var(--color-text);
+}
+
 /* Placeholder / TODO callouts */
 .placeholder-box {
   border: 2px dashed var(--color-border);
