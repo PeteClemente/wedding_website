@@ -4,12 +4,10 @@
   if (!items.length || !lightbox) return;
 
   const lightboxImg = lightbox.querySelector('.lightbox-image');
-  const lightboxCaption = lightbox.querySelector('.lightbox-caption');
   const closeBtn = lightbox.querySelector('.lightbox-close');
 
   function open(item) {
     const img = item.querySelector('img');
-    const caption = item.querySelector('figcaption');
 
     if (img) {
       lightboxImg.src = img.src;
@@ -19,7 +17,6 @@
       lightboxImg.hidden = true;
     }
 
-    lightboxCaption.textContent = caption ? caption.textContent : '';
     lightbox.classList.add('open');
   }
 
