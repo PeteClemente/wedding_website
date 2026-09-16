@@ -104,6 +104,9 @@ a { color: var(--color-primary-dark); }
 .brand {
   order: 2;
   justify-self: center;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
   font-family: var(--font-script);
   font-size: 2.3rem;
   font-weight: 400;
@@ -116,15 +119,22 @@ a { color: var(--color-primary-dark); }
   color: #fff;
 }
 
-/* Enlarge the "&" tap target invisibly, since it takes 5 quick clicks
-   to find the hidden game and it's a small character to hit precisely. */
+.brand-mark {
+  height: 1.8rem;
+  width: auto;
+  display: block;
+}
+
+/* Enlarge the ampersand-ish middle of the monogram invisibly, since it
+   takes 4 quick clicks to find the hidden game and it's a small target
+   to hit precisely. */
 #brand-amp {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 2.75rem;
-  min-height: 2.75rem;
-  margin: -1rem -0.75rem;
+  position: absolute;
+  left: 42%;
+  top: 50%;
+  width: 45%;
+  height: 2.75rem;
+  transform: translate(-50%, -50%);
 }
 
 /* Same trick, smaller footer text: a second hidden way to find the
@@ -588,9 +598,8 @@ body.has-hero-photo main {
   bottom: 6%;
   transform: translateX(-50%);
   margin: 0;
-  font-family: var(--font-script);
-  font-size: clamp(1.1rem, 3vw, 1.5rem);
-  color: var(--color-primary-dark);
+  width: clamp(50px, 11vw, 80px);
+  height: auto;
 }
 
 .polaroid {
