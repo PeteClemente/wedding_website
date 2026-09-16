@@ -120,7 +120,7 @@ a { color: var(--color-primary-dark); }
 }
 
 .brand-mark {
-  height: 1.8rem;
+  height: 3.4rem;
   width: auto;
   display: block;
 }
@@ -133,7 +133,7 @@ a { color: var(--color-primary-dark); }
   left: 42%;
   top: 50%;
   width: 45%;
-  height: 2.75rem;
+  height: 3.75rem;
   transform: translate(-50%, -50%);
 }
 
@@ -595,7 +595,7 @@ body.has-hero-photo main {
   position: absolute;
   z-index: 2;
   left: 50%;
-  bottom: 6%;
+  bottom: 16%;
   transform: translateX(-50%);
   margin: 0;
   width: clamp(50px, 11vw, 80px);
